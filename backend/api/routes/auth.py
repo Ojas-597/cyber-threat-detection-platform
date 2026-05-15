@@ -2,7 +2,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from authentication.jwt_handler import create_access_token
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth",
+                  tags=["Authentication"])
 
 class LoginRequest(BaseModel):
     username: str
@@ -16,5 +17,6 @@ def login(data: LoginRequest):
     })
 
     return {
-        "access_token": token
+        "access_token": token,
+        "token_type": "bearer"
     }
