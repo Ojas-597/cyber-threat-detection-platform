@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cyber-platform
+  template:
+    metadata:
+      labels:
+        app: cyber-platform
+    spec:
+      containers:
+      - name: backend
+        image: cyber-platform:latest
