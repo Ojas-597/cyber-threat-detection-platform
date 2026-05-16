@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import Routes
-from backend.api.routes import auth
-from backend.api.routes import threats
-from backend.api.routes import packets
-from backend.api.routes import incidents
+from api.routes import auth
+from api.routes import threats
+from api.routes import packets
+from api.routes import incidents
 
 # ---------------------------------------------------
 # FastAPI App Initialization
