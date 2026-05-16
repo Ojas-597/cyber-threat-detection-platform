@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from backend.authentication.jwt_handler import create_access_token
+from authentication.jwt_handler import create_access_token
 
 router = APIRouter(prefix="/auth",
                   tags=["Authentication"])
