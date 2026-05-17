@@ -1,72 +1,47 @@
-from datetime import datetime
+"""
+Simple cybersecurity
+assistant chatbot.
+"""
 
-# =====================================================
-# Cybersecurity Knowledge Base
-# =====================================================
 
-responses = {
+def ask_assistant(
+    question: str
+):
+    """
+    Return simple
+    security guidance.
+    """
 
-    "phishing":
-        "Phishing attacks steal credentials using fake websites or emails.",
+    q = question.lower()
 
-    "ddos":
-        "DDoS attacks flood servers with massive traffic.",
+    if "ddos" in q:
+        return {
+            "response":
+                "DDoS attacks flood "
+                "systems with traffic. "
+                "Consider rate limiting "
+                "and IP blocking."
+        }
 
-    "sql injection":
-        "SQL Injection manipulates database queries in vulnerable applications.",
+    if "phishing" in q:
+        return {
+            "response":
+                "Phishing attacks use "
+                "fake domains or "
+                "emails. Verify URLs "
+                "before clicking."
+        }
 
-    "ransomware":
-        "Ransomware encrypts files and demands payment.",
-
-    "malware":
-        "Malware is malicious software designed to damage systems.",
-
-    "xss":
-        "Cross-Site Scripting injects malicious scripts into web pages.",
-
-    "mitre":
-        "MITRE ATT&CK is a cybersecurity knowledge base of attacker techniques.",
-
-    "cve":
-        "CVE stands for Common Vulnerabilities and Exposures."
-}
-
-# =====================================================
-# AI Chatbot Function
-# =====================================================
-
-def chatbot(query):
-
-    query = query.lower()
-
-    for keyword in responses:
-
-        if keyword in query:
-
-            return {
-
-                "query": query,
-
-                "response": responses[keyword],
-
-                "timestamp": str(datetime.now())
-            }
+    if "malware" in q:
+        return {
+            "response":
+                "Malware can infect "
+                "systems. Scan files "
+                "and isolate endpoints."
+        }
 
     return {
-
-        "query": query,
-
-        "response": "Threat information not available.",
-
-        "timestamp": str(datetime.now())
+        "response":
+            "Threat intelligence "
+            "assistant ready."
     }
-
-# =====================================================
-# Example Usage
-# =====================================================
-
-if __name__ == "__main__":
-
-    question = "What is phishing?"
-
-    print(chatbot(question))
