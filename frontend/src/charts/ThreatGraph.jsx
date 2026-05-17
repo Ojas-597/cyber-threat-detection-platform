@@ -5,8 +5,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
-  ResponsiveContainer
+  ResponsiveContainer,
+  CartesianGrid
 } from "recharts";
 
 const data = [
@@ -23,9 +23,15 @@ function ThreatGraph() {
   return (
     <div style={styles.container}>
       <h2>Weekly Threat Activity</h2>
-      <ResponsiveContainer width="100%" height={300}>
+
+      <ResponsiveContainer
+        width="100%"
+        height={300}
+      >
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+          />
           <XAxis dataKey="day" />
           <YAxis />
           <Tooltip />
@@ -44,10 +50,9 @@ function ThreatGraph() {
 const styles = {
   container: {
     marginTop: "40px",
-    backgroundColor: "#1e293b",
+    background: "#1e293b",
     padding: "20px",
-    borderRadius: "12px",
-    color: "white"
+    borderRadius: "12px"
   }
 };
 
