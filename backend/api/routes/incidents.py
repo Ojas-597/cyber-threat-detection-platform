@@ -1,13 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/incidents",
-    tags=["Incident Response"]
-)
+router = APIRouter(prefix="/incidents", tags=["Incidents"])
 
 @router.get("/")
-def get_incidents():
-
-    return {
-        "message": "Incident response endpoint"
-    }
+def incidents():
+    return {"message": "Incident response endpoint"}
