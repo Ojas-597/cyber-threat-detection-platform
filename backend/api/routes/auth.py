@@ -1,37 +1,65 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends
+)
 from pydantic import BaseModel
-from backend.authentication.jwt_handler import create_access_token, get_db
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+from backend.authentication.jwt_handler import (
+    create_access_token
+)
+from backend.database.connection import (
+    get_db
+)
+from backend.database.models.users import (
+    User
+)
+
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"]
+)
+
 
 class LoginRequest(BaseModel):
     username: str
     password: str
 
+
 @router.post("/login")
-def login(data: LoginRequest):
-    if data.username != "admin" or data.password != "admin123":
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+def login(
+    data: LoginRequest,
+    db: Session = Depends(get_db)
+):
+    user = (
+        db.query(User)
+        .filter(
+            User.username == data.username
+        )
+        .first()
+    )
 
-    token = create_access_token({"username": data.username})
-    return {"access_token": token, "token_type": "bearer"}
-backend/api/routes/threats.py
-from fastapi import APIRouter
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
 
-router = APIRouter(prefix="/threats", tags=["Threats"])
+    # Replace later with password hashing
+    if user.password_hash != data.password:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
 
-@router.get("/live")
-def get_live_threats():
+    token = create_access_token(
+        {
+            "username": user.username
+        }
+    )
+
     return {
-        "total_live_threats": 3,
-        "threats": []
-    }
-
-@router.get("/analytics/summary")
-def summary():
-    return {
-        "critical": 1,
-        "high": 1,
-        "medium": 1,
-        "low": 0
+        "access_token": token,
+        "token_type": "bearer"
     }
