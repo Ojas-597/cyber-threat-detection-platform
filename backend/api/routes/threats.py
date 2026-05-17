@@ -15,6 +15,7 @@ from backend.blockchain_logs.logger import (
 from backend.threat_intelligence.feeds import (
     get_iocs
 )
+from backend.database.connection import get_db
 
 router = APIRouter(
     prefix="/threats",
