@@ -1,14 +1,34 @@
-from pymongo import MongoClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-MONGO_URL = "mongodb://localhost:27017"
+# SQLite database file
+DATABASE_URL = "sqlite:///./cyber_threat.db"
 
-client = MongoClient(MONGO_URL)
+# Create database engine
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={
+        "check_same_thread": False
+    }
+)
 
-db = client["cybersecurity_platform"]
+# Session factory
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
-# Collections
-users_collection = db["users"]
-threats_collection = db["threats"]
-packets_collection = db["network_packets"]
-incidents_collection = db["incident_responses"]
-blockchain_collection = db["blockchain_logs"]
+
+def get_db():
+    """
+    FastAPI database dependency.
+    Creates a session for each request
+    and closes it automatically.
+    """
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
