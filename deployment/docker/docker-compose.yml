@@ -1,13 +1,26 @@
-version: '3'
+version: "3.9"
 
 services:
-
   backend:
-    build: .
+    build:
+      context: ../../
+      dockerfile: deployment/docker/Dockerfile
+    container_name: cyber-backend
     ports:
       - "8000:8000"
+    volumes:
+      - ../../:/app
 
-  mongodb:
-    image: mongo
+  frontend:
+    image: node:18
+    container_name: cyber-frontend
+    working_dir: /app/frontend
+    volumes:
+      - ../../frontend:/app/frontend
+    command: >
+      sh -c "npm install &&
+             npm start"
     ports:
-      - "27017:27017"
+      - "3000:3000"
+    depends_on:
+      - backend
