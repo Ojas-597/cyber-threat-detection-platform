@@ -1,20 +1,33 @@
+from typing import Dict
 import random
 
-attack_types = [
 
-    "Normal",
-    "DDoS",
-    "SQL Injection",
-    "Port Scanning",
-    "Brute Force",
-    "Phishing"
-]
+def analyze_packet(
+    packet: dict
+) -> Dict:
+    """
+    Analyze a packet
+    and assign a risk score.
+    """
 
-def detect_attack(packet):
-
-    prediction = random.choice(attack_types)
+    score = round(
+        random.uniform(
+            0.1,
+            0.99
+        ),
+        2
+    )
 
     return {
-        "packet": packet,
-        "prediction": prediction
+        "module":
+            "intrusion_detection",
+
+        "malicious":
+            score > 0.8,
+
+        "confidence":
+            score,
+
+        "packet":
+            packet
     }
