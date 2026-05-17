@@ -1,50 +1,65 @@
 import hashlib
-from datetime import datetime
+import json
+from typing import Any
 
-# =====================================================
-# Generate SHA256 Hash
-# =====================================================
 
-def generate_hash(data):
+def generate_hash(
+    data: Any
+) -> str:
+    """
+    Generate deterministic SHA-256 hash
+    from any serializable data.
 
-    encoded = data.encode()
+    Used for:
+    - Threat log anchoring
+    - Integrity verification
+    - Blockchain audit trail
+    """
 
-    hashed = hashlib.sha256(encoded)
+    try:
+        normalized = json.dumps(
+            data,
+            sort_keys=True,
+            separators=(
+                ",",
+                ":"
+            ),
+            default=str
+        )
 
-    return hashed.hexdigest()
+        sha256_hash = (
+            hashlib.sha256(
+                normalized.encode(
+                    "utf-8"
+                )
+            ).hexdigest()
+        )
 
-# =====================================================
-# Create Blockchain Log
-# =====================================================
+        return sha256_hash
 
-def create_block(event_data, previous_hash):
+    except Exception as e:
+        raise ValueError(
+            f"Hash generation failed: "
+            f"{str(e)}"
+        )
 
-    timestamp = str(datetime.now())
 
-    block_data = f"{event_data}{timestamp}{previous_hash}"
+def verify_hash(
+    data: Any,
+    expected_hash: str
+) -> bool:
+    """
+    Verify that generated hash
+    matches expected hash.
+    """
 
-    current_hash = generate_hash(block_data)
-
-    block = {
-
-        "timestamp": timestamp,
-        "event_data": event_data,
-        "previous_hash": previous_hash,
-        "current_hash": current_hash
-    }
-
-    return block
-
-# =====================================================
-# Example
-# =====================================================
-
-if __name__ == "__main__":
-
-    block = create_block(
-
-        event_data="Threat Detected",
-        previous_hash="0000000000"
+    generated_hash = (
+        generate_hash(
+            data
+        )
     )
 
-    print(block)
+    return (
+        generated_hash
+        == expected_hash
+    )
