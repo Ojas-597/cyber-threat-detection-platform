@@ -1,88 +1,53 @@
 import re
-from urllib.parse import urlparse
+from typing import Dict
 
-# =====================================================
-# Suspicious Keywords
-# =====================================================
 
 SUSPICIOUS_KEYWORDS = [
-
     "login",
     "verify",
-    "bank",
     "secure",
     "update",
-    "account"
+    "account",
+    "bank"
 ]
 
-# =====================================================
-# Detect Phishing URL
-# =====================================================
 
-def detect_phishing(url):
+def detect_phishing(
+    url: str
+) -> Dict:
+    """
+    Basic phishing URL detector.
+    """
 
-    score = 0
+    url_lower = url.lower()
 
-    parsed = urlparse(url)
+    suspicious = any(
+        keyword in url_lower
+        for keyword in SUSPICIOUS_KEYWORDS
+    )
 
-    domain = parsed.netloc
+    has_ip_address = bool(
+        re.search(
+            r"(?:\d{1,3}\.){3}\d{1,3}",
+            url
+        )
+    )
 
-    # Long URL
+    risk_score = 0.2
 
-    if len(url) > 75:
+    if suspicious:
+        risk_score += 0.4
 
-        score += 1
-
-    # Suspicious Keywords
-
-    for keyword in SUSPICIOUS_KEYWORDS:
-
-        if keyword in url.lower():
-
-            score += 1
-
-    # Presence of numbers
-
-    if re.search(r'\\d', domain):
-
-        score += 1
-
-    # Multiple hyphens
-
-    if domain.count("-") >= 2:
-
-        score += 1
-
-    # HTTP instead of HTTPS
-
-    if parsed.scheme == "http":
-
-        score += 1
-
-    # Final Result
-
-    if score >= 3:
-
-        return {
-
-            "url": url,
-            "status": "Phishing Detected",
-            "risk_score": score
-        }
+    if has_ip_address:
+        risk_score += 0.4
 
     return {
-
-        "url": url,
-        "status": "Safe",
-        "risk_score": score
+        "module":
+            "phishing_detection",
+        "url":
+            url,
+        "phishing":
+            risk_score >= 0.7,
+        "confidence":
+            round(risk_score, 2)
     }
-
-# =====================================================
-# Example
-# =====================================================
-
-if __name__ == "__main__":
-
-    test_url = "http://secure-bank-login123.com"
-
-    print(detect_phishing(test_url))
