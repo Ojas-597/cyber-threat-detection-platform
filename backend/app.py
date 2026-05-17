@@ -1,85 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import Routes
-from api.routes import auth
-from api.routes import threats
-from api.routes import packets
-from api.routes import incidents
-
-# ---------------------------------------------------
-# FastAPI App Initialization
-# ---------------------------------------------------
+from backend.api.routes import auth, threats, incidents, packets
 
 app = FastAPI(
-
     title="Cyber Threat Detection Platform",
-
-    description="""
-    AI-Powered Cybersecurity Platform
-
-    Features:
-    - Threat Detection
-    - Intrusion Detection
-    - Incident Response
-    - Threat Intelligence
-    - Blockchain Log Integrity
-    - AI Analytics
-    """,
-
     version="1.0.0"
 )
 
-# ---------------------------------------------------
-# CORS Configuration
-# ---------------------------------------------------
-
 app.add_middleware(
-
     CORSMiddleware,
-
-    allow_origins=["*"],
-
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
-
     allow_methods=["*"],
-
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------
-# Register API Routes
-# ---------------------------------------------------
-
 app.include_router(auth.router)
 app.include_router(threats.router)
-app.include_router(packets.router)
 app.include_router(incidents.router)
-
-# ---------------------------------------------------
-# Root Endpoint
-# ---------------------------------------------------
+app.include_router(packets.router)
 
 @app.get("/")
-def home():
-
-    return {
-
-        "message": "Cyber Threat Detection Platform Running",
-        "status": "active",
-        "version": "1.0.0"
-    }
-
-# ---------------------------------------------------
-# Health Check Endpoint
-# ---------------------------------------------------
-
-@app.get("/health")
-def health_check():
-
-    return {
-
-        "server": "running",
-        "backend": "online",
-        "api_status": "healthy"
-    }
+def root():
+    return {"message": "Platform running"}
