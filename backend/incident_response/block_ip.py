@@ -1,63 +1,103 @@
-import os
+import ipaddress
 from datetime import datetime
 
-# =====================================================
-# Block IP Address
-# =====================================================
+# In-memory blocked IP registry
+# Replace with database storage later
+blocked_ips = []
 
-def block_ip(ip_address):
 
-    command = f"netsh advfirewall firewall add rule name=Block_{ip_address} dir=in action=block remoteip={ip_address}"
-
-    try:
-
-        os.system(command)
-
-        return {
-
-            "status": "success",
-            "blocked_ip": ip_address,
-            "timestamp": str(datetime.now())
-        }
-
-    except Exception as e:
-
-        return {
-
-            "status": "failed",
-            "error": str(e)
-        }
-
-# =====================================================
-# Unblock IP Address
-# =====================================================
-
-def unblock_ip(ip_address):
-
-    command = f"netsh advfirewall firewall delete rule name=Block_{ip_address}"
+def block_ip(ip_address: str) -> dict:
+    """
+    Validate and simulate blocking
+    a malicious IP address.
+    """
 
     try:
+        # Validate IP format
+        ipaddress.ip_address(
+            ip_address
+        )
 
-        os.system(command)
-
+    except ValueError:
         return {
-
-            "status": "unblocked",
-            "ip": ip_address
+            "success": False,
+            "message": "Invalid IP address"
         }
 
-    except Exception as e:
+    # Prevent duplicates
+    existing = next(
+        (
+            entry
+            for entry in blocked_ips
+            if entry["ip_address"]
+            == ip_address
+        ),
+        None
+    )
 
+    if existing:
         return {
-
-            "status": "failed",
-            "error": str(e)
+            "success": True,
+            "message":
+                "IP already blocked",
+            "blocked_ip":
+                existing
         }
 
-# =====================================================
-# Example
-# =====================================================
+    blocked_entry = {
+        "ip_address":
+            ip_address,
+        "blocked_at":
+            datetime.utcnow()
+            .isoformat(),
+        "status":
+            "blocked"
+    }
 
-if __name__ == "__main__":
+    blocked_ips.append(
+        blocked_entry
+    )
 
-    print(block_ip("192.168.1.100"))
+    return {
+        "success": True,
+        "message":
+            "IP blocked successfully",
+        "blocked_ip":
+            blocked_entry
+    }
+
+
+def get_blocked_ips():
+    """
+    Return all blocked IPs.
+    """
+    return blocked_ips
+
+
+def unblock_ip(
+    ip_address: str
+) -> dict:
+    """
+    Remove IP from blocked list.
+    """
+
+    for entry in blocked_ips:
+        if (
+            entry["ip_address"]
+            == ip_address
+        ):
+            blocked_ips.remove(
+                entry
+            )
+
+            return {
+                "success": True,
+                "message":
+                    "IP unblocked"
+            }
+
+    return {
+        "success": False,
+        "message":
+            "IP not found"
+    }
