@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from backend.database.connection import get_db
 
 router = APIRouter(prefix="/packets", tags=["Packets"])
 
