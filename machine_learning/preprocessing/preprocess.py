@@ -1,8 +1,30 @@
 import pandas as pd
 
 
-def preprocess(file):
+def preprocess_dataset(
+    input_path: str,
+    output_path: str
+):
+    """
+    Basic preprocessing.
+    """
 
-    data = pd.read_csv(file)
+    df = pd.read_csv(
+        input_path
+    )
 
-    return data.dropna()
+    df = df.dropna()
+
+    df = df.drop_duplicates()
+
+    df.to_csv(
+        output_path,
+        index=False
+    )
+
+    return {
+        "rows":
+            len(df),
+        "output":
+            output_path
+    }
