@@ -4,11 +4,12 @@ function Sidebar() {
   return (
     <div style={styles.sidebar}>
       <h2>🛡 SOC Panel</h2>
+
       <ul style={styles.menu}>
         <li>Dashboard</li>
         <li>Threats</li>
         <li>Incidents</li>
-        <li>Reports</li>
+        <li>Packets</li>
         <li>Settings</li>
       </ul>
     </div>
@@ -17,17 +18,16 @@ function Sidebar() {
 
 const styles = {
   sidebar: {
-    width: "250px",
-    minHeight: "100vh",
+    width: "240px",
     background: "#111827",
     padding: "20px",
-    position: "sticky",
-    top: 0
+    minHeight: "100vh"
   },
   menu: {
     listStyle: "none",
+    padding: 0,
     marginTop: "30px",
-    lineHeight: "50px",
+    lineHeight: "45px",
     fontSize: "18px"
   }
 };
