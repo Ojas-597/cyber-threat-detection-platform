@@ -1,91 +1,54 @@
 import React from "react";
-
 import {
-
   LineChart,
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
+  CartesianGrid,
   ResponsiveContainer
-
 } from "recharts";
 
 const data = [
-
-  {
-    time: "10AM",
-    attacks: 4
-  },
-
-  {
-    time: "11AM",
-    attacks: 12
-  },
-
-  {
-    time: "12PM",
-    attacks: 7
-  },
-
-  {
-    time: "1PM",
-    attacks: 18
-  },
-
-  {
-    time: "2PM",
-    attacks: 9
-  },
-
-  {
-    time: "3PM",
-    attacks: 14
-  }
+  { day: "Mon", attacks: 12 },
+  { day: "Tue", attacks: 18 },
+  { day: "Wed", attacks: 9 },
+  { day: "Thu", attacks: 24 },
+  { day: "Fri", attacks: 15 },
+  { day: "Sat", attacks: 30 },
+  { day: "Sun", attacks: 20 }
 ];
 
 function ThreatGraph() {
-
   return (
-
-    <div
-      style={{
-        backgroundColor: "white",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 2px 10px rgba(0,0,0,0.1)"
-      }}
-    >
-
-      <h2 style={{ marginBottom: "20px" }}>
-        Real-Time Threat Activity
-      </h2>
-
-      <ResponsiveContainer width="100%" height={350}>
-
+    <div style={styles.container}>
+      <h2>Weekly Threat Activity</h2>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
-
           <CartesianGrid strokeDasharray="3 3" />
-
-          <XAxis dataKey="time" />
-
+          <XAxis dataKey="day" />
           <YAxis />
-
           <Tooltip />
-
           <Line
             type="monotone"
             dataKey="attacks"
+            stroke="#00ff99"
             strokeWidth={3}
           />
-
         </LineChart>
-
       </ResponsiveContainer>
-
     </div>
   );
 }
+
+const styles = {
+  container: {
+    marginTop: "40px",
+    backgroundColor: "#1e293b",
+    padding: "20px",
+    borderRadius: "12px",
+    color: "white"
+  }
+};
 
 export default ThreatGraph;
