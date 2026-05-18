@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cyber-platform
+  name: soc-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: cyber-platform
+      app: soc-backend
   template:
     metadata:
       labels:
-        app: cyber-platform
+        app: soc-backend
     spec:
       containers:
       - name: backend
-        image: cyber-platform:latest
+        image: soc-backend:latest
+        ports:
+        - containerPort: 8000
