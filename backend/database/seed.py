@@ -1,13 +1,11 @@
 import uuid
 
 from backend.database.connection import SessionLocal
-from backend.database.models import (
-    User,
-    Threat,
-    Incident,
-    Packet,
-    BlockchainLog
-)
+from backend.database.models.users import User
+from backend.database.models.threats import Threat
+from backend.database.models.incidents import Incident
+from backend.database.models.packets import Packet
+from backend.database.models.blockchain_logs import BlockchainLog
 
 db = SessionLocal()
 

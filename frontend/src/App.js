@@ -1,21 +1,101 @@
 import React from "react";
-import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Dashboard";
+import {
+  Routes,
+  Route
+} from "react-router-dom";
 
-function App() {
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Threats from "./pages/Threats";
+import Incidents from "./pages/Incidents";
+import Packets from "./pages/Packets";
+import Malware from "./pages/Malware";
+
+import Sidebar from "./components/Sidebar";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+function ProtectedLayout({ children }) {
   return (
-    <div style={styles.container}>
+    <div style={styles.app}>
       <Sidebar />
-      <Dashboard />
+      {children}
     </div>
   );
 }
 
+function App() {
+  return (
+    <Routes>
+      {/* Login page */}
+      <Route
+        path="/"
+        element={<Login />}
+      />
+
+      {/* Protected pages */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Dashboard />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/threats"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Threats />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/incidents"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Incidents />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/packets"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Packets />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/malware"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Malware />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
 const styles = {
-  container: {
+  app: {
     display: "flex",
     minHeight: "100vh",
-    backgroundColor: "#0f172a",
+    background: "#0f172a",
     color: "white"
   }
 };

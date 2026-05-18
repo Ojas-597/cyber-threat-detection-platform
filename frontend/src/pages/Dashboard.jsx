@@ -3,9 +3,12 @@ import React, {
   useState
 } from "react";
 
+import { useNavigate } from "react-router-dom";
 import ThreatGraph from "../charts/ThreatGraph";
 
 function Dashboard() {
+  const navigate = useNavigate();
+
   const [summary, setSummary] = useState({
     critical: 0,
     high: 0,
@@ -16,8 +19,23 @@ function Dashboard() {
   const [liveThreats, setLiveThreats] = useState(0);
 
   useEffect(() => {
+    const token = localStorage.getItem(
+      "access_token"
+    );
+
+    // Redirect to login if no token
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+
     fetch(
-      "http://127.0.0.1:8000/threats/analytics/summary"
+      "http://127.0.0.1:8000/threats/analytics/summary",
+      { headers }
     )
       .then((res) => res.json())
       .then((data) => {
@@ -25,7 +43,8 @@ function Dashboard() {
       });
 
     fetch(
-      "http://127.0.0.1:8000/threats/live"
+      "http://127.0.0.1:8000/threats/live",
+      { headers }
     )
       .then((res) => res.json())
       .then((data) => {
@@ -33,7 +52,7 @@ function Dashboard() {
           data.total_live_threats
         );
       });
-  }, []);
+  }, [navigate]);
 
   return (
     <div style={styles.main}>
@@ -80,11 +99,13 @@ const styles = {
     flex: 1,
     padding: "30px"
   },
+
   cards: {
     display: "flex",
     gap: "20px",
     marginTop: "20px"
   },
+
   card: {
     flex: 1,
     background: "#1e293b",

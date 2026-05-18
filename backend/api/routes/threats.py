@@ -2,11 +2,18 @@ from fastapi import (
     APIRouter,
     Depends
 )
+
+from fastapi.security import (
+    HTTPBearer,
+    HTTPAuthorizationCredentials
+)
+
 from sqlalchemy.orm import Session
 
 from backend.database.connection import (
     get_db
 )
+
 from backend.database.models.threats import (
     Threat
 )
@@ -16,9 +23,13 @@ router = APIRouter(
     tags=["Threats"]
 )
 
+# Enables Swagger Authorize
+security = HTTPBearer()
+
 
 @router.get("/live")
 def get_live_threats(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
     active_threats = (
@@ -30,13 +41,16 @@ def get_live_threats(
     )
 
     return {
-        "total_live_threats": len(active_threats),
-        "threats": active_threats
+        "total_live_threats":
+            len(active_threats),
+        "threats":
+            active_threats
     }
 
 
 @router.get("/analytics/summary")
 def summary(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
     threats = db.query(Threat).all()
