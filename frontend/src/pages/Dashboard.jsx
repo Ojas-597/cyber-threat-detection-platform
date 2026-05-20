@@ -16,68 +16,246 @@ function Dashboard() {
     low: 0
   });
 
-  const [liveThreats, setLiveThreats] = useState(0);
+  const [liveThreats, setLiveThreats] =
+    useState(0);
 
-  useEffect(() => {
-    const token = localStorage.getItem(
-      "access_token"
+  const [attackTrigger,
+    setAttackTrigger] =
+    useState(0);
+
+  // MITRE ATT&CK
+  const [mitreTechnique,
+    setMitreTechnique] =
+    useState(
+      "T1566 - Phishing"
     );
 
-    // Redirect to login if no token
+  // Threat Intelligence IOC
+  const [threatIntel,
+    setThreatIntel] =
+    useState(
+      "185.220.101.1"
+    );
+
+  useEffect(() => {
+    const token =
+      localStorage.getItem(
+        "access_token"
+      );
+
     if (!token) {
       navigate("/");
       return;
     }
 
     const headers = {
-      Authorization: `Bearer ${token}`
+      Authorization:
+        `Bearer ${token}`
     };
 
-    fetch(
-      "http://127.0.0.1:8000/threats/analytics/summary",
-      { headers }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setSummary(data);
-      });
+    const fetchDashboardData =
+      () => {
 
-    fetch(
-      "http://127.0.0.1:8000/threats/live",
-      { headers }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setLiveThreats(
-          data.total_live_threats
+      // Threat summary
+      fetch(
+        "http://127.0.0.1:8000/threats/analytics/summary",
+        { headers }
+      )
+        .then((res) =>
+          res.json()
+        )
+        .then((data) => {
+          setSummary(data);
+        })
+        .catch((err) =>
+          console.error(err)
         );
-      });
+
+      // Live threats
+      fetch(
+        "http://127.0.0.1:8000/threats/live",
+        { headers }
+      )
+        .then((res) =>
+          res.json()
+        )
+        .then((data) => {
+          setLiveThreats(
+            data.total_live_threats
+          );
+        })
+        .catch((err) =>
+          console.error(err)
+        );
+
+      // Threat Intelligence IOC
+      fetch(
+        "http://127.0.0.1:8000/intel/iocs",
+        { headers }
+      )
+        .then((res) =>
+          res.json()
+        )
+        .then((data) => {
+          if (
+            data.malicious_ips &&
+            data.malicious_ips.length > 0
+          ) {
+            setThreatIntel(
+              data.malicious_ips[0]
+            );
+          }
+        })
+        .catch((err) =>
+          console.error(err)
+        );
+    };
+
+    // Initial load
+    fetchDashboardData();
+
+    // Auto refresh every 5 sec
+    const interval =
+      setInterval(
+        fetchDashboardData,
+        5000
+      );
+
+    return () =>
+      clearInterval(
+        interval
+      );
+
   }, [navigate]);
+
+  // Simulate attack
+  const simulateAttack =
+    () => {
+
+      // Increase threat counts
+      setLiveThreats(
+        (prev) => prev + 1
+      );
+
+      setSummary(
+        (prev) => ({
+          ...prev,
+          critical:
+            prev.critical + 1,
+          high:
+            prev.high + 1
+        })
+      );
+
+      // Rotate MITRE ATT&CK
+      const mitreTechniques = [
+        "T1498 - Network Denial of Service",
+        "T1190 - Exploit Public-Facing Application",
+        "T1566 - Phishing",
+        "T1204 - User Execution"
+      ];
+
+      setMitreTechnique(
+        mitreTechniques[
+          Math.floor(
+            Math.random() *
+            mitreTechniques.length
+          )
+        ]
+      );
+
+      // Rotate IOC
+      const iocs = [
+        "185.220.101.1",
+        "8.8.8.8",
+        "1.2.3.4",
+        "bad-domain.example"
+      ];
+
+      setThreatIntel(
+        iocs[
+          Math.floor(
+            Math.random() *
+            iocs.length
+          )
+        ]
+      );
+
+      // Trigger graph spike
+      setAttackTrigger(
+        (prev) => prev + 1
+      );
+    };
 
   return (
     <div style={styles.main}>
-      <h1>Cyber Threat Dashboard</h1>
+      <h1>
+        Cyber Threat Dashboard
+      </h1>
 
+      <button
+        style={styles.button}
+        onClick={
+          simulateAttack
+        }
+      >
+        Simulate Attack
+      </button>
+
+      {/* Main cards */}
       <div style={styles.cards}>
         <Card
           label="Live Threats"
-          value={liveThreats}
+          value={
+            liveThreats
+          }
         />
+
         <Card
           label="Critical"
-          value={summary.critical}
+          value={
+            summary.critical
+          }
         />
+
         <Card
           label="High"
-          value={summary.high}
+          value={
+            summary.high
+          }
         />
+
         <Card
           label="Medium"
-          value={summary.medium}
+          value={
+            summary.medium
+          }
         />
       </div>
 
-      <ThreatGraph />
+      {/* MITRE + Intel */}
+      <div style={styles.cards}>
+        <Card
+          label="MITRE ATT&CK"
+          value={
+            mitreTechnique
+          }
+        />
+
+        <Card
+          label="Threat Intel IOC"
+          value={
+            threatIntel
+          }
+        />
+      </div>
+
+      {/* Graph */}
+      <ThreatGraph
+        attackTrigger={
+          attackTrigger
+        }
+      />
     </div>
   );
 }
@@ -100,6 +278,20 @@ const styles = {
     padding: "30px"
   },
 
+  button: {
+    marginTop: "20px",
+    padding:
+      "12px 20px",
+    border: "none",
+    borderRadius: "8px",
+    background:
+      "#ef4444",
+    color: "white",
+    fontWeight:
+      "bold",
+    cursor: "pointer"
+  },
+
   cards: {
     display: "flex",
     gap: "20px",
@@ -108,10 +300,13 @@ const styles = {
 
   card: {
     flex: 1,
-    background: "#1e293b",
+    background:
+      "#1e293b",
     padding: "20px",
-    borderRadius: "12px",
-    textAlign: "center"
+    borderRadius:
+      "12px",
+    textAlign:
+      "center"
   }
 };
 

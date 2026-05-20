@@ -10,6 +10,9 @@ import Threats from "./pages/Threats";
 import Incidents from "./pages/Incidents";
 import Packets from "./pages/Packets";
 import Malware from "./pages/Malware";
+import Phishing from "./pages/Phishing";
+import Intrusion from "./pages/Intrusion";
+import Response from "./pages/Response";
 
 import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -32,7 +35,7 @@ function App() {
         element={<Login />}
       />
 
-      {/* Protected pages */}
+      {/* Dashboard */}
       <Route
         path="/dashboard"
         element={
@@ -44,6 +47,7 @@ function App() {
         }
       />
 
+      {/* Threats */}
       <Route
         path="/threats"
         element={
@@ -55,6 +59,7 @@ function App() {
         }
       />
 
+      {/* Incidents */}
       <Route
         path="/incidents"
         element={
@@ -66,6 +71,7 @@ function App() {
         }
       />
 
+      {/* Packets */}
       <Route
         path="/packets"
         element={
@@ -77,12 +83,49 @@ function App() {
         }
       />
 
+      {/* Malware */}
       <Route
         path="/malware"
         element={
           <ProtectedRoute>
             <ProtectedLayout>
               <Malware />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Phishing */}
+      <Route
+        path="/phishing"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Phishing />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Intrusion */}
+      <Route
+        path="/intrusion"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Intrusion />
+            </ProtectedLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Incident Response */}
+      <Route
+        path="/response"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout>
+              <Response />
             </ProtectedLayout>
           </ProtectedRoute>
         }

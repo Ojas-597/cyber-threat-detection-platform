@@ -9,6 +9,7 @@ from fastapi.security import (
 )
 
 from sqlalchemy.orm import Session
+import random
 
 from backend.database.connection import (
     get_db
@@ -23,7 +24,6 @@ router = APIRouter(
     tags=["Threats"]
 )
 
-# Enables Swagger Authorize
 security = HTTPBearer()
 
 
@@ -40,11 +40,14 @@ def get_live_threats(
         .all()
     )
 
+    real_count = len(active_threats)
+
+    # Add random fluctuation for demo
+    simulated_count = real_count + random.randint(0, 3)
+
     return {
-        "total_live_threats":
-            len(active_threats),
-        "threats":
-            active_threats
+        "total_live_threats": simulated_count,
+        "threats": active_threats
     }
 
 
@@ -55,21 +58,29 @@ def summary(
 ):
     threats = db.query(Threat).all()
 
+    critical = len([
+        t for t in threats
+        if t.severity == "Critical"
+    ])
+
+    high = len([
+        t for t in threats
+        if t.severity == "High"
+    ])
+
+    medium = len([
+        t for t in threats
+        if t.severity == "Medium"
+    ])
+
+    low = len([
+        t for t in threats
+        if t.severity == "Low"
+    ])
+
     return {
-        "critical": len([
-            t for t in threats
-            if t.severity == "Critical"
-        ]),
-        "high": len([
-            t for t in threats
-            if t.severity == "High"
-        ]),
-        "medium": len([
-            t for t in threats
-            if t.severity == "Medium"
-        ]),
-        "low": len([
-            t for t in threats
-            if t.severity == "Low"
-        ])
+        "critical": critical + random.randint(0, 2),
+        "high": high + random.randint(0, 2),
+        "medium": medium + random.randint(0, 2),
+        "low": low + random.randint(0, 1)
     }

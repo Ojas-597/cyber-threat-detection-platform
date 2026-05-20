@@ -40,13 +40,34 @@ function Sidebar() {
         </li>
 
         <li>
-          <Link to="/settings" style={styles.link}>
-            Settings
+          <Link to="/malware" style={styles.link}>
+            Malware
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/phishing" style={styles.link}>
+            Phishing
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/intrusion" style={styles.link}>
+            Intrusion
+          </Link>
+        </li>
+
+        <li>
+          <Link to="/response" style={styles.link}>
+            Response
           </Link>
         </li>
       </ul>
 
-      <button onClick={handleLogout} style={styles.logoutBtn}>
+      <button
+        onClick={handleLogout}
+        style={styles.logoutBtn}
+      >
         Logout
       </button>
     </div>
